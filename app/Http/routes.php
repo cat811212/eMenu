@@ -31,7 +31,7 @@ Route::get('menu/{shopId}','ShopMenuController@getShopMenuPage');
 
 Route::get('order/{groupId}','BuyListController@getGroupOrderPage');
 Route::get('shop','ShopController@getAllShop');
-
+Route::get('log','PageController@logPage');
 Route::get('shopmap','ShopController@shopMapPage');
 Route::get('createshop','ShopController@createShopPage');
 Route::post('createshop','ShopController@storeShop');
