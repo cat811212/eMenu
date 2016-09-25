@@ -284,8 +284,9 @@ h5, h6          { font-weight: bolder }
 
 /* Alert */
 .alert{
-    padding: 15px 15px 15px 265px;
+    padding: 25px 15px 25px 265px;
     margin-bottom: 0px;
+    font-size: 26px;
 }
 
 
