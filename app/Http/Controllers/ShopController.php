@@ -52,7 +52,7 @@ class ShopController extends Controller
     	return Redirect::to('shop')->with(array('alert'=>'fail','msg'=>'發生一件忘記被分類的錯誤，店家新增失敗'));
     }
     public function shopMapPage()
-    {   
+    { 
     	return view('client.shopmap',['shopInfo'=> $this->shopService->getAllShop()]);
     }
     public function randomShop()
@@ -61,8 +61,6 @@ class ShopController extends Controller
         if($shop_id==null||$shop_id=='')
             return '發生錯誤！:(';
         return Redirect::to('menu/'.$shop_id)->with(array('alert'=>'scs','msg'=>'剛剛幫你決定這家，考慮看看吧！！'));
-        // $shop_info=$this->shopService->getShopInfo($shop_id)[0];
-        // return ['shopName'=>$this->shopService->getShopName($shop_id),'shop_id'=>$shop_info->id,'shop_img'=>$shop_info->img];
     }  
     
 }
