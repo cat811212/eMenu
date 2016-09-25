@@ -36,22 +36,13 @@
 				<li><a href="{{URL::asset('group')}}">我要訂餐</a></li>
 				<li><a href="{{URL::asset('todaygroup')}}">跑腿去</a></li>
 				<li><a href="{{URL::asset('shopmap')}}">地圖瀏覽</a></li>
+				<li><a href="{{URL::asset('log')}}">更新辛酸史</a></li>
 			</ul>
 		</nav><!-- end navigation menu -->
 
 		<div class="footer clearfix">
-			<ul class="social clearfix">
-				<!-- <li><a href="#" class="fb" data-title="Facebook"></a></li>
-				<li><a href="#" class="google" data-title="Google +"></a></li>
-				<li><a href="#" class="behance" data-title="Behance"></a></li> -->
-				<!--<li><a href="#" class="twitter" data-title="Twitter"></a></li>
-				<li><a href="#" class="dribble" data-title="Dribble"></a></li>-->
-				<!-- <li><a href="#" class="rss" data-title="RSS"></a></li> -->
-			</ul><!-- end social -->
-
 			<div class="rights">
 				<p>made by Parallel Lab</p>
-				<!-- <p>Template by <a href="">Pixelhint.com</a></p> -->
 			</div><!-- end rights -->
 		</div ><!-- end footer -->
 
