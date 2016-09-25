@@ -55,7 +55,7 @@ class GroupController extends Controller
         if(!($this->groupService->checkGroup($group_id)))
             return Redirect::to('group')->with(array('alert'=>'fail','msg'=>'訂購團已不存在'));
         if($this->groupService->stopGroup($group_id)){
-            return Redirect::to('group')->with(array('alert'=>'scs','msg'=>'你剛剛結束了一波團購，沒訂到的人叫他吃自己'));
+            return Redirect::to('todaygroup')->with(array('alert'=>'scs','msg'=>'你剛剛結束了一波團購，沒訂到的人叫他吃自己'));
         }
         return Redirect::to('group')->with(array('alert'=>'fail','msg'=>'一個未被歸類的錯誤 :('));
     }
