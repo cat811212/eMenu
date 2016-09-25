@@ -2,6 +2,33 @@
 @section('script')
 <script>
   $(document).ready(function () {
+    var mapClicked=false;
+    var uploadChange=false;
+    $("#small-map").on('click',function() {
+        mapClicked=true;
+    });
+    $('input[name="shop-image"]').on('change',function() {
+        uploadChange=true;
+    });
+    $(document).submit(function() {
+      
+      if($('input[name="shop-name"]').val()==null||$('input[name="shop-name"]').val()==''){
+        $('#alertContent').text("你忘記輸入店家名稱!!");
+        $('#formAlert').modal();
+        return false;
+      }
+      if(!mapClicked){
+        $('#alertContent').text("你忘記在地圖中點擊店家位置!!");
+        $('#formAlert').modal();
+        return false;
+      }
+      if(!uploadChange){
+        $('#alertContent').text("你忘記上傳檔案!!");
+        $('#formAlert').modal();
+        return false;
+      }
+      return true;
+    });
     $(window).keydown(function(event){
         if(event.keyCode == 13) {
           event.preventDefault();
@@ -13,10 +40,31 @@
 </script>
 @stop
 @section('wrapper')
+<div id="formAlert" class="modal bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title" id="mySmallModalLabel">你還忘記一件事!!</h4> 
+     </div>
+     <div class="modal-body">
+
+     <p id="alertContent"></p>
+     </div> 
+     <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">我知道了</button>
+      </div>
+     </div>
+     
+  </div>
+</div>
+
 <section class="main clearfix">
 <section class="wrapper">
 <div class="content">
-{!!Form::open(['url'=>URL::asset('createshop'), 'method'=>'post','files'=>true])!!}
+{!!Form::open(['url'=>URL::asset('createshop'), 'method'=>'post','files'=>true, 'autocomplete'=>'off'])!!}
 <div class="form-group">
     {!!Form::label('shop-name', '店名')!!}
     {!!Form::text('shop-name','',array('class' => 'form-control', 'placeholder' => '店家名稱'))!!}
@@ -50,5 +98,5 @@
 </section>
 </section><!-- end main -->
     <script type="text/javascript" src="{{URL::asset('js/map.js')}}"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBpD7XIePZMQ5IFX4D7PUWBPG1Yxc4T-Uo&libraries=places&callback=initAutocomplete"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_MAP_APIKEY')}}&libraries=places&callback=initAutocomplete"></script>
 @stop
