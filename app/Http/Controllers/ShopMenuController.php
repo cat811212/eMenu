@@ -35,12 +35,13 @@ class ShopMenuController extends Controller
     public function createShopMenu()
     {
         $input=Input::all();
+        $result=null;
         if(!is_numeric($input['shop-id'])||!($this->shopService->checkShop($input['shop-id'])))
           return Redirect::back()->with(array('alert'=>'fail','msg'=>'資料輸入有誤'));
-        $this->shopMenuService->removeAllMenu($input['shop-id']);
-        if($this->shopMenuService->storeShopMenu($input['shop-id'],$input['shop-menu']))
-          return Redirect::back()->with(array('alert'=>'scs','msg'=>'菜單匯入完成'));
-        return Redirect::back()->with(array('alert'=>'fail','msg'=>'一個未被歸類的錯誤 :('));
+        $result=$this->shopMenuService->storeShopMenu($input['shop-id'],$input['shop-menu']);
+        if($result==NULL)
+            return Redirect::back()->with(array('alert'=>'scs','msg'=>'菜單匯入完成 ｡:.ﾟヽ(*´∀`)ﾉﾟ.:｡'));
+        return Redirect::back()->with(array('alert'=>'fail','msg'=>$result));
     }
 
 }
