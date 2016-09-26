@@ -90,8 +90,10 @@ class ShopMenuService{
                 $row++;
                 $num = count($data);
                 $haveChild=false;
+                $haveInsert=false;
                 $parentId=-1;
-                if($num==2){
+                if($num>1&&$num<10){
+                    $haveInsert=false;
                     for ($c=0; $c < $num; $c++) {
                         if($c==0){
                             if(!is_string($data[0])||strcmp($data[0],'')===0||$data[0]===null||ctype_space($data[0])){              //檢查父菜單名稱是否為字串，不能為空資料
@@ -100,51 +102,41 @@ class ShopMenuService{
                             }
 
                         }else{
-                            if(!is_numeric($data[$c])){
-                                fclose($handle);
-                                throw new \Exception("在第{$row}行，第".($c+1)."列 '{$data[$c]}' 該項金額有錯誤，數字裡面夾雜其他非數字字元！！");  //1指菜單金額錯誤
+                            if(is_numeric($data[1])){ //第二筆資料如果只有數字，表示沒有子菜單
+                                $menuList[]=array('name'=>$data[0],'price'=>$data[1]);
+                                $haveInsert=true;
+                                break;
+                            }else{
+                                $childMenu=explode(' ',$data[$c]);
+                                if(count($childMenu)!=2){ //檢查子菜單格式是否正確 應以空格隔出菜名與價格
+                                    fclose($handle);
+                                    throw new \Exception("在第{$row}行，第".($c+1)."行少了空白還是多了逗號？？"); //0指菜單名稱錯誤                     
+                                }
+                                if(!is_string($childMenu[0])||strcmp($childMenu[0],'')===0||$childMenu[0]===null||ctype_space($childMenu[0])){  //應為子菜名 (字串)
+                                    fclose($handle);
+                                    throw new \Exception("在第{$row}行，第".($c+1)."列該名稱有錯誤，菜名不能都是空白或該欄位格式錯誤？？");  //0指菜單名稱錯誤
+                                }
+                                if(!is_numeric($childMenu[1])){   //應為價格 (數字)
+                                    fclose($handle);
+                                    throw new \Exception("在第{$row}行，第".($c+1)."列 '{$childMenu[1]}' 該項金額有錯誤，數字裡面夾雜其他非數字字元！！");//1指菜單金額錯誤
+                                }
+                                $childList[]=array('childname'=>$childMenu[0],'childprice'=>$childMenu[1]);
                             }
-                            $menuList[]=array('name'=>$data[0],'price'=>$data[1]);
                         }
+                }    
+                if(!$haveInsert){
+                    $menuList[]=array('name'=>$data[0],'price'=>$childList);
+                    $childList=array(); //子菜單陣列清空
                 }
-                }else if($num>2&&$num<10){ //子欄位不得超過10個
-                    for ($c=0; $c < $num; $c++) {
-
-                     if($c==0){
-                        if(!is_string($data[0])||strcmp($data[0],'')===0||$data[0]===null||ctype_space($data[0])){ 
-                        //檢查父菜單名稱是否為字串，不能為空資料
-                            fclose($handle);
-                            throw new \Exception("在第{$row}行，第".($c+1)."列該名稱有錯誤，菜名不能都是空白或該欄位格式錯誤？？"); //0指菜單名稱錯誤
-                    }
-                      
-                    }else{
-                        $childMenu=explode(' ',$data[$c]);
-                        if(count($childMenu)!=2){ //檢查子菜單格式是否正確 應以空格隔出菜名與價格
-                            fclose($handle);
-                            throw new \Exception("在第{$row}行，第".($c+1)."行少了空白還是多了逗號？？"); //0指菜單名稱錯誤                     
-                        }
-                        if(!is_string($childMenu[0])||strcmp($childMenu[0],'')===0||$childMenu[0]===null||ctype_space($childMenu[0])){  //應為子菜名 (字串)
-                            fclose($handle);
-                            throw new \Exception("在第{$row}行，第".($c+1)."列該名稱有錯誤，菜名不能都是空白或該欄位格式錯誤？？");  //0指菜單名稱錯誤
-                        }
-                        if(!is_numeric($childMenu[1])){   //應為價格 (數字)
-                            fclose($handle);
-                            throw new \Exception("在第{$row}行，第".($c+1)."列 '{$childMenu[1]}' 該項金額有錯誤，數字裡面夾雜其他非數字字元！！");//1指菜單金額錯誤
-                        }
-                        $childList[]=array('childname'=>$childMenu[0],'childprice'=>$childMenu[1]);
-                        
-                    }
-                }
-                $menuList[]=array('name'=>$data[0],'price'=>$childList);
-
+                
             }else{
                 fclose($handle);
-                throw new \Exception('在第'.$row.'行有超出或少於欄位！！');//上傳檔案列數錯誤
+                throw new \Exception("在第{$row}行有超出或少於欄位！！");//上傳檔案列數錯誤
             }
     }
     }else{
         fclose($handle);
-        throw new \Exception('伺服器檔案錯誤，請通知管理員！@_@');//cannot open file
+        throw new \Exception("伺服器檔案錯誤，請通知管理員！@_@");//cannot open file
     }//檔案開啟錯誤else程式結束
         fclose($handle);
         return $menuList;
@@ -165,14 +157,14 @@ class ShopMenuService{
                 if($parentId>0){
                     foreach ($value['price'] as $priceKey => $priceValue) {
                         if(!$this->shopMenuRepository->createMeal($shop_id,$priceValue['childname'],$priceValue['childprice'],$parentId))
-                                throw new \Exception('資料庫在第'.$row.'行建立資料時發生錯誤 @_@');//資料庫處理時發生錯誤              
+                                throw new \Exception("資料庫在第{$row}行建立資料時發生錯誤 @_@");//資料庫處理時發生錯誤              
                     }
                 } 
             }else if(count($value['price'])==1){
                 if(!$this->shopMenuRepository->createMeal($shop_id,$value['name'],$value['price'],null))
-                        throw new \Exception('資料庫在第'.$row.'行建立資料時發生錯誤 @_@');//資料庫處理時發生錯誤    
+                        throw new \Exception("資料庫在第{$row}行建立資料時發生錯誤 @_@");//資料庫處理時發生錯誤    
             }else{
-                throw new \Exception('資料庫在第'.$row.'計算列數時發生錯誤 @_@');//上傳檔案列數錯誤
+                throw new \Exception("資料庫在第{$row}行計算列數時發生錯誤 @_@");//上傳檔案列數錯誤
             }   
         }
         }
