@@ -28,7 +28,7 @@
 				<div class="group-link">
 					<div class="info">
 						<div class="title">
-						<h3><a href="{{URL::asset('order/'.$item['id'])}}">{{$item['shop']}}</a></h3>
+						<h3><a href="{{URL::asset('order/'.$item['id'].'?view=list')}}">{{$item['shop']}}</a></h3>
 						</div>
 						<div class="meta">
 							<ul class="list-inline">
