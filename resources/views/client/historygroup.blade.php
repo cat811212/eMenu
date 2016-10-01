@@ -5,9 +5,8 @@
 		<section class="top">	
 <div class="wrapper content_header clearfix">
 			<div class="title">曾經的訂單</div>
-			<div class="btn-group">
-  </div>
 </div>
+
 		</section><!-- end top -->
 
 		<section class="wrapper">
