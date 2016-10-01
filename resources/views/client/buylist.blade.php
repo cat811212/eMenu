@@ -13,7 +13,7 @@
 			var total=0;
 			$("input[name='amount[]']").each(function() {
 				if(($.isNumeric($(this).attr('price'))&&($.isNumeric($(this).val())))){
-					var price=parseInt($(this).attr('price'));
+					var price=parseFloat($(this).attr('price'));
 					var amount=parseInt($(this).val());
 					total=price*amount+total;
 			}
@@ -49,6 +49,13 @@
 			$(amountBox).html('0');
 			return false;
 		});
+		$(document).submit(function() {
+	      if($('select[name="user"]').val()==null){
+	        alert("你忘記選是誰了！！");
+	     //   return false;
+	      }
+	      return true;
+    });
 		$("button[target='decrease']").click(function(event) {
 			var amountBox=$(this).parent().parent().find("div[name='amount']");
 			var amountText=amountBox.text();
@@ -73,7 +80,6 @@
 @stop
 @section('wrapper')
 
-
 {!!Form::open(['url'=>URL::asset('addorder'), 'method'=>'post', 'autocomplete'=>'off'])!!}
 {!!Form::hidden('group_id',$group_id)!!}
     
@@ -87,6 +93,7 @@
       <div class="modal-body">
       <p>你是誰？</p>
       <select name="user" class="form-control">
+      <option disabled selected>選一下你是誰吧！</option>
       	@foreach($member as $data)
       	<option value="{{$data['id']}}">{{$data['name']}}</option>	
       	@endforeach
