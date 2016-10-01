@@ -32,6 +32,9 @@ class BuyListController extends Controller
 
 
     }
+    /**
+     * 移除訂單
+     */
     public function removeOrder()
     {
         $order_id=Input::all()['order_id'];
@@ -50,11 +53,16 @@ class BuyListController extends Controller
         }
         return Redirect::back()->with(array('alert'=>'fail','msg'=>'資料庫錯誤'));
     }
+    /**
+     * 新增訂單
+     */
     public function addOrder()
     {
         $input=Input::all();
         if(!is_numeric($input['group_id']))
-            return Redirect::to('group')->with(array('alert'=>'fail','msg'=>'資料輸入有誤'));
+            return Redirect::back()->with(array('alert'=>'fail','msg'=>'資料輸入有誤'));
+        if(!isset($input['user'])||!$this->memberService->checkMember($input['user']))
+            return Redirect::to('group')->with(array('alert'=>'fail','msg'=>'使用者不存在！'));
         $groupState=$this->groupService->getGroupState($input['group_id']);
         if($groupState>0)
             return Redirect::to('group')->with(array('alert'=>'fail','msg'=>'團購已經結束了，你沒跟到！'));
@@ -65,9 +73,14 @@ class BuyListController extends Controller
        }
         return Redirect::back()->with(array('alert'=>'fail','msg'=>'資料庫錯誤'));
     }
+    /**
+     * 取得訂單頁面
+     * @param (int)開團編號$group_id
+     */
     public function getGroupOrderPage($group_id)
     {
-   //     echo($this->buyListService->getGroupOrderPage($group_id)['']);
+        
+
         if(!is_numeric($group_id))
             return Redirect::to('group')->with(array('alert'=>'fail','msg'=>'資料輸入有誤'));
         $shop_id=$this->groupService->getGroupShop($group_id);
@@ -79,14 +92,14 @@ class BuyListController extends Controller
         if(!$this->groupService->checkGroup($group_id))
             return Redirect::back()->with(array('alert'=>'fail','msg'=>'該訂購不存在！'));
         $groupState=$this->groupService->getGroupState($group_id);
-        if($groupState==0)
-            return view('client.buylist',['shopName'=>$this->shopService->getShopName($shop_id),'shopInfo'=>$this->shopService->getShopInfo($shop_id),'group_id' =>$group_id,'order' => $this->buyListService->getGroupOrder($group_id),'menu' => $this->shopMenuService->getShopMenu($shop_id),'member' => $this->memberService->getAllMember()]);
-        else if($groupState==1)
-            return view('client.historybuylist',['shopName'=>$this->shopService->getShopName($shop_id),'shopInfo'=>$this->shopService->getShopInfo($shop_id),'group_id' =>$group_id,'order' => $this->buyListService->getGroupOrder($group_id),'menu' => $this->shopMenuService->getShopMenu($shop_id),'member' => $this->memberService->getAllMember()]);
+        if($groupState==0){
+            return view('client.buylist',['shopName'=>$this->shopService->getShopName($shop_id),'shopInfo'=>$this->shopService->getShopInfo($shop_id),'group_id' =>$group_id,'order' => $this->buyListService->getGroupPeopleOrder($group_id),'menu' => $this->shopMenuService->getShopMenu($shop_id),'member' => $this->memberService->getAllMember()]);
+        }else if($groupState==1){
+            if(Input::has('view')&&strcmp(Input::get('view'),'list')===0)
+                return view('client.historybuylist',['shopName'=>$this->shopService->getShopName($shop_id),'shopInfo'=>$this->shopService->getShopInfo($shop_id),'group_id' =>$group_id,'order' => $this->buyListService->getGroupOrder($group_id),'menu' => $this->shopMenuService->getShopMenu($shop_id),'member' => $this->memberService->getAllMember()]);
+            return view('client.historypeoplebuylist',['shopName'=>$this->shopService->getShopName($shop_id),'shopInfo'=>$this->shopService->getShopInfo($shop_id),'group_id' =>$group_id,'order' => $this->buyListService->getGroupPeopleOrder($group_id),'menu' => $this->shopMenuService->getShopMenu($shop_id),'member' => $this->memberService->getAllMember()]);
+        }
         return Redirect::back()->with(array('alert'=>'fail','msg'=>'未知錯誤'));
-    //    return $this->buyListService->getGroupOrder($group_id);
-     //   var_dump (['shop' => $shopName]);
-      //  return ['shop' => $shopName,'order' => $this->buyListService->getGroupOrder($group_id),'menu' => $this->shopMenuService->getShopMenu($shop_id)];
     	
     }
     
