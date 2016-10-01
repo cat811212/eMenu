@@ -16,7 +16,11 @@ class MemberRepository{
    	public function getAllMember()
    	{
    		return $this->member->all();
-   	}	
+   	}
+    public function checkMember($user_id)
+    {
+      return $this->member->find($user_id);
+    }
 }
 
 ?>
