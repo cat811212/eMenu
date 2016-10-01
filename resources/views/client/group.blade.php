@@ -4,11 +4,6 @@
 	<section class="top">	
 		<div class="wrapper content_header clearfix">
 			<div class="title">進行中的訂單</div>
-			<div class="btn-group">
-  	<div class="form-inline">
-		<a class="btn btn-primary" href="{{URL::asset('group/history')}}">過去的訂單</a>
-	</div>
-  </div>
 </div>
 		</section><!-- end top -->
 
@@ -22,7 +17,7 @@
 					<div class="info">
 						<div class="title">
 						<h3>
-							<a href="order/{{$item['id']}}">{{$item['shop']}}</a>
+							<a href="{{URL::asset('order/'.$item['id'])}}">{{$item['shop']}}</a>
 							<small>&nbsp於&nbsp{{$item['created_at']}}&nbsp由&nbsp{{$item['manager']}}&nbsp發起</small>
 						</h3>
 						</div>
@@ -32,7 +27,7 @@
 				</div>
 				@endforeach
 			@else
-				<h2>沒有人開團，當然沒有團可以訂~</h2>
+				<h2>考慮當今天第一個開團的霸主嗎？</h2>
 			@endif
 			</div><!-- end content -->
 		</section>
