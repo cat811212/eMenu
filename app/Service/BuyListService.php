@@ -67,10 +67,11 @@ class BuyListService{
         return false;        
     }
     /**
+     * 回傳每個人各訂什麼
      * @param (int)開團編號 $group_id
      * @return [(parent)'父餐點名稱(text)',meal=>[(0)'子餐點名稱(text)',(1)'餐點資訊細節(array)',(2)'訂餐備註(text)',(3)數量(int),(4)'訂購ID(int)'],(member)=>(string)訂餐人名稱]
      */
-    public function getGroupOrder($group_id)
+    public function getGroupPeopleOrder($group_id)
     {
         $order=$this->buyListRepository->getGroupOrder($group_id);
         $groupOrder=[];
@@ -87,8 +88,63 @@ class BuyListService{
                 $groupOrder[]=['parent'=>null,'meal'=>[$mealName,$meal,$item['memo'],$item['amount'],$item['id']],'member'=>$memberName];
         }
         return $groupOrder;
-      //  $order=$this->buyListRepository->getGroupOrder($group_id);
-    //    return $this->buyListRepository->getGroupOrder($group_id);
+    }
+
+    /**
+     * 回傳訂購數量明細
+     * @param (int)開團編號 $group_id
+     * @return [(parent)'父餐點名稱(text)',meal=>[(0)'子餐點名稱(text)',(1)'餐點資訊細節(array)',(2)'訂餐備註(text)',(3)數量(int),(4)'訂購ID(int)'],(member)=>(string)訂餐人名稱]
+     */
+    public function getGroupOrder($group_id)
+    {
+        $order=$this->buyListRepository->getGroupOrderSortByMeal($group_id);
+        $groupOrder=[];
+        $mealId=-1;//當前菜單的編號
+        $itemAmount=0;//該項目的數量
+        $mealMemo=null;//訂餐的備註
+        $repeatItem=false;//是否有重複的訂餐
+        $itemMemo=null;//整合訂購的備註
+        foreach ($order as $item) {
+            if($mealId===$item['meal_id']){
+                if($meal['price']>10){
+                    if($mealMemo!=null&&strcmp($mealMemo,'')!=0)
+                        $itemMemo=$mealMemo.';'.$item['memo'];
+                    else
+                        $itemMemo=$itemMemo.$item['memo'].';';
+                    $itemAmount=$item['amount']+$itemAmount;
+                    $repeatItem=true;
+                    $mealMemo=null;
+                    continue;
+                }
+                
+            }
+            if($mealId!=-1){//是否有上一次讀入的菜單編號
+                if(!$repeatItem){ //是否有重複的訂購
+                    $itemMemo=$mealMemo; //沒有重複的訂購，備註只有一項
+                }
+                if(isset($parent))
+                    $groupOrder[]=['parent'=>$parent,'meal'=>[$mealName,$meal,$itemMemo,$itemAmount,$item['id']]];
+                else
+                    $groupOrder[]=['parent'=>null,'meal'=>[$mealName,$meal,$itemMemo,$itemAmount,$item['id']]];
+                $mealId=-1; 
+            }
+            $repeatItem=false;
+            $itemAmount=0;
+            $parent=NULL;
+            $mealId=$item['meal_id'];
+            $mealMemo=$item['memo'];
+            $itemAmount=$item['amount'];
+            $meal=$this->shopMenuRepository->getMealInfo($item['meal_id']);
+             if($meal['parent']!=null)
+                $parent=$this->shopMenuRepository->getMealName($meal['parent']);
+            $mealName=$this->shopMenuRepository->getMealName($item['meal_id']);
+
+        }
+        if(isset($parent)) //加入最後一個項目
+            $groupOrder[]=['parent'=>$parent,'meal'=>[$mealName,$meal,$itemMemo,$itemAmount,$item['id']]];
+        else
+            $groupOrder[]=['parent'=>null,'meal'=>[$mealName,$meal,$itemMemo,$itemAmount,$item['id']]];
+        return $groupOrder;
     }
 
 }
