@@ -60,7 +60,7 @@ class GroupRepository{
      */
     public function getDateStopGroup($date)
     {
-        return $this->groupbuying->where('state','1')->whereBetween('updated_at',[$date.' 00:00:00',$date.' 23:59:59'])->get();
+        return $this->groupbuying->where('state','1')->whereBetween('updated_at',[$date.' 00:00:00',$date.' 23:59:59'])->orderBy('created_at','desc')->get();
     }
     /**
      * 取得歷史訂購
@@ -68,7 +68,7 @@ class GroupRepository{
      */
     public function getHistoryGroup()
     {
-        return $this->groupbuying->where('state','1')->get();
+        return $this->groupbuying->where('state','1')->orderBy('created_at','desc')->get();
     }
     /**
      * 復原刪除訂購團
