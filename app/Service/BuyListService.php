@@ -135,8 +135,9 @@ class BuyListService{
             $mealMemo=$item['memo'];
             $itemAmount=$item['amount'];
             $meal=$this->shopMenuRepository->getMealInfo($item['meal_id']);
-             if($meal['parent']!=null)
+             if($meal['parent']!=null){
                 $parent=$this->shopMenuRepository->getMealName($meal['parent']);
+            }
             $mealName=$this->shopMenuRepository->getMealName($item['meal_id']);
 
         }
