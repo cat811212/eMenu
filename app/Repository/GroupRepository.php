@@ -11,6 +11,15 @@ class GroupRepository{
         $this->groupbuying = $groupbuying;
     }
     /**
+     * 依照店家編號列表正在開團中的團
+     * @param (int)店家編號
+     * @return NULL or (obj) 對應的開團資料
+     */
+    public function getShopInGroups($shop_id)
+    {
+        return $this->groupbuying->where('shop_id',$shop_id)->get();
+    }
+    /**
      * 檢查是否有該訂購團編號
      * @param (int)訂購團編號 $group_id
      * @return NULL or (obj) 對應編號團購資料
