@@ -14,6 +14,22 @@ class GroupService{
         $this->shopRepository=$shopRepository;
     }
     /**
+     * 檢查該店家是否有開團進行中
+     * @param (int)店家編號
+     * @return (bool)存在回傳true, 不存在回傳false
+     */
+    public function checkShopInGroup($shop_id)
+    {
+        if($data=$this->groupRepository->getShopInGroups($shop_id)){
+            foreach ($data as $group) {
+                if($group['state']==0){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
      * 檢查店家是否已存在資料庫
      * @param (int)店家編號
      * @return (bool)存在回傳true, 不存在回傳false
