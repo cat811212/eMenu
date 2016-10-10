@@ -6,7 +6,6 @@ use App\Repository\ShopRepository;
 class ShopService{
 
 	 protected $shopRepository;
-	// protected $shopImgPath=base_path().'/shops/img';
 
 	public function __construct(ShopRepository $shopRepository)
 	{
