@@ -28,15 +28,24 @@ class ShopMenuRepository{
     }
     public function getMealName($meal_id)
     {
-        return $this->shop_menu->find($meal_id)->name;
+        return $this->shop_menu->withTrashed()->find($meal_id)->name;
     }
+    // /**
+    //  * 取得已經移除的餐點名稱
+    //  * @param (int)餐點編號
+    //  * @return (obj)餐點資料
+    //  */
+    // public function getTrashedMealName($meal_id)
+    // {
+    //     return $this->shop_menu->onlyTrashed()->findOrFail($meal_id)->name;
+    // }
     public function getChildMenu($meal_id)
     {
-        return $this->shop_menu->where('parent',$meal_id)->get();
+        return $this->shop_menu->withTrashed()->where('parent',$meal_id)->get();
     }
     public function getMealInfo($meal_id)
     {
-        return $this->shop_menu->find($meal_id);
+        return $this->shop_menu->withTrashed()->find($meal_id);
     }
 
 
