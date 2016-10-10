@@ -26,7 +26,7 @@
   	<h4>備註：{{$shopInfo[0]['memo']}}</h4>
   </div>
 </div>
-				<table class="table table-hover">
+				<table class="table table-bordered">
 					<thead>
 						<tr>
 							<th class="col-md-2">名稱</th>
