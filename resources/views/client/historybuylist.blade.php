@@ -32,7 +32,7 @@
   </div>
 </div>
 
-				<table class="table table-hover">
+				<table class="table table-bordered">
 					<thead>
 						<tr>
 							<th class="col-md-4">訂購內容</th>
