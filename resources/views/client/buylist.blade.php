@@ -49,13 +49,14 @@
 			$(amountBox).html('0');
 			return false;
 		});
-		$(document).submit(function() {
-	      if($('select[name="user"]').val()==null){
+		$("form[name='meal_list']").submit(function() {
+	      if($("select[name='user']").val()==null){
 	        alert("你忘記選是誰了！！");
-	     //   return false;
+	        return false;
 	      }
 	      return true;
     });
+		
 		$("button[target='decrease']").click(function(event) {
 			var amountBox=$(this).parent().parent().find("div[name='amount']");
 			var amountText=amountBox.text();
@@ -80,7 +81,7 @@
 @stop
 @section('wrapper')
 
-{!!Form::open(['url'=>URL::asset('addorder'), 'method'=>'post', 'autocomplete'=>'off'])!!}
+{!!Form::open(['url'=>URL::asset('addorder'),'method'=>'post','name'=>'meal_list','autocomplete'=>'off'])!!}
 {!!Form::hidden('group_id',$group_id)!!}
     
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
