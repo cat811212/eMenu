@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Service\ShopMenuService;
 use App\Service\ShopService;
+use App\Service\GroupService;
 use Illuminate\Support\Facades\Input;
 use Redirect;
 use Session;
@@ -15,11 +16,13 @@ class ShopMenuController extends Controller
 {
  	 protected $shopMenuService;
    protected $shopService;
+   protected $groupService;
 
- 	 public function __construct(ShopMenuService $shopMenuService,ShopService $shopService)
+ 	 public function __construct(ShopMenuService $shopMenuService,ShopService $shopService,GroupService $groupService)
     {
         $this->shopMenuService = $shopMenuService;
         $this->shopService=$shopService;
+        $this->groupService=$groupService;
     }
 
     /**
@@ -38,6 +41,8 @@ class ShopMenuController extends Controller
         $result=null;
         if(!is_numeric($input['shop-id'])||!($this->shopService->checkShop($input['shop-id'])))
           return Redirect::back()->with(array('alert'=>'fail','msg'=>'資料輸入有誤'));
+        if($this->groupService->checkShopInGroup($input['shop-id']))//檢查該店是否再開團列表中
+          return Redirect::back()->with(array('alert'=>'fail','msg'=>'目前該店正在開團列表中，請先刪除進行中的團再匯入菜單！'));
         $result=$this->shopMenuService->storeShopMenu($input['shop-id'],$input['shop-menu']);
         if($result==NULL)
             return Redirect::back()->with(array('alert'=>'scs','msg'=>'菜單匯入完成 ｡:.ﾟヽ(*´∀`)ﾉﾟ.:｡'));
